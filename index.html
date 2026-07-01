@@ -362,14 +362,336 @@ Please change the parent <Route path="${N}"> to <Route path="${N==="/"?"*":`${N}
     renderObs.observe(root, {subtree:true, childList:true, attributes:true, attributeFilter:['style']});
   }
 
+  function ensureSchemaEnhancementStyles(){
+    if(document.getElementById('schema-enhancement-styles')) return;
+    var style = document.createElement('style');
+    style.id = 'schema-enhancement-styles';
+    style.textContent = `
+      .schema-reading-card,
+      .schema-tiempo-card{
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.5rem;
+        border: 1px solid rgba(255,255,255,0.09);
+        background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+        box-shadow: 0 18px 44px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.04);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+      .schema-reading-card{
+        margin-top: 1.25rem;
+        padding: 1rem 1.05rem;
+      }
+      .schema-reading-card::before,
+      .schema-tiempo-card::before{
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(circle at top right, rgba(251,191,36,0.12), transparent 42%), radial-gradient(circle at bottom left, rgba(196,181,253,0.12), transparent 48%);
+      }
+      .schema-reading-card h4,
+      .schema-tiempo-card h4{
+        font-family: "Cormorant Garamond", serif;
+      }
+      .schema-legend-grid{
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.8rem;
+      }
+      .schema-legend-item{
+        padding: 0.9rem 0.95rem;
+        border-radius: 1rem;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.06);
+      }
+      .schema-legend-kicker{
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        margin-bottom: 0.35rem;
+        font-size: 0.66rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255,248,235,0.68);
+      }
+      .schema-legend-dot{
+        width: 0.48rem;
+        height: 0.48rem;
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+      .schema-legend-item p{
+        font-size: 0.78rem;
+        line-height: 1.55;
+        color: rgba(255,255,255,0.56);
+        font-weight: 300;
+      }
+      .schema-stage-badge{
+        position: absolute;
+        z-index: 2;
+        padding: 0.4rem 0.68rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(12,12,22,0.5);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-size: 0.62rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(255,248,235,0.68);
+        pointer-events: none;
+      }
+      .schema-stage-badge strong{
+        color: rgba(255,248,235,0.92);
+        font-weight: 500;
+      }
+      .schema-stage-badge.top-left{
+        top: 1rem;
+        left: 1rem;
+      }
+      .schema-stage-badge.bottom-right{
+        right: 1rem;
+        bottom: 1rem;
+        text-align: right;
+      }
+      .schema-focus-halo{
+        position: absolute;
+        inset: 18%;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(255,248,235,0.16) 0%, rgba(251,191,36,0.08) 28%, rgba(196,181,253,0.04) 52%, transparent 74%);
+        filter: blur(22px);
+        pointer-events: none;
+      }
+      .schema-orbit-ring{
+        position: absolute;
+        inset: 8%;
+        border-radius: 999px;
+        border: 1px dashed rgba(255,255,255,0.08);
+        pointer-events: none;
+      }
+      .schema-tiempo-card{
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+      }
+      .schema-tiempo-preview{
+        position: relative;
+        min-height: 210px;
+        overflow: hidden;
+        border-radius: 1.2rem;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.03);
+      }
+      .schema-tiempo-preview img{
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.78;
+        transform: scale(1.04);
+        filter: saturate(0.95);
+      }
+      .schema-tiempo-preview::after{
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(10,10,18,0.7), rgba(10,10,18,0.18) 48%, rgba(10,10,18,0.72));
+      }
+      .schema-tiempo-ribbon{
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        margin-bottom: 0.8rem;
+      }
+      .schema-tiempo-chip{
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.38rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.64rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.05);
+        color: rgba(255,248,235,0.76);
+      }
+      .schema-tiempo-copy{
+        position: relative;
+        z-index: 1;
+      }
+      .schema-tiempo-copy p{
+        max-width: 38rem;
+        font-size: 0.82rem;
+        line-height: 1.65;
+        color: rgba(255,255,255,0.6);
+        font-weight: 300;
+      }
+      .schema-tiempo-copy h4{
+        margin-bottom: 0.45rem;
+        font-size: 1rem;
+        color: rgba(255,248,235,0.92);
+        letter-spacing: 0.03em;
+      }
+      @media (min-width: 900px){
+        .schema-tiempo-card{
+          grid-template-columns: minmax(220px, 0.95fr) minmax(0, 1.25fr);
+          align-items: center;
+          padding: 1.15rem;
+        }
+      }
+      html[data-theme="light"] .schema-reading-card,
+      html[data-theme="light"] .schema-tiempo-card{
+        border-color: rgba(26,26,46,0.12);
+        background: linear-gradient(145deg, rgba(255,255,255,0.76), rgba(255,255,255,0.58));
+        box-shadow: 0 18px 44px rgba(26,26,46,0.08), inset 0 1px 0 rgba(255,255,255,0.55);
+      }
+      html[data-theme="light"] .schema-legend-item{
+        background: rgba(255,255,255,0.5);
+        border-color: rgba(26,26,46,0.08);
+      }
+      html[data-theme="light"] .schema-legend-kicker,
+      html[data-theme="light"] .schema-tiempo-chip{
+        color: rgba(26,26,46,0.62);
+      }
+      html[data-theme="light"] .schema-legend-item p,
+      html[data-theme="light"] .schema-tiempo-copy p{
+        color: rgba(26,26,46,0.7);
+      }
+      html[data-theme="light"] .schema-tiempo-copy h4,
+      html[data-theme="light"] .schema-stage-badge strong{
+        color: rgba(26,26,46,0.9);
+      }
+      html[data-theme="light"] .schema-stage-badge{
+        background: rgba(255,255,255,0.74);
+        border-color: rgba(26,26,46,0.08);
+        color: rgba(26,26,46,0.62);
+      }
+      html[data-theme="light"] .schema-tiempo-preview{
+        border-color: rgba(26,26,46,0.08);
+      }
+      html[data-theme="light"] .schema-tiempo-preview::after{
+        background: linear-gradient(90deg, rgba(245,240,232,0.82), rgba(245,240,232,0.2) 48%, rgba(245,240,232,0.82));
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function findHeadingByText(tagName, text){
+    return Array.from(document.querySelectorAll(tagName)).find(function(node){
+      return node.textContent && node.textContent.trim() === text;
+    }) || null;
+  }
+
+  function injectClarissaEnhancements(){
+    var container = document.querySelector('[aria-labelledby="clarissa-puzzle-title"]');
+    if(!container) return;
+    var stage = container.querySelector('div.relative.aspect-square');
+    if(stage && !stage.querySelector('.schema-focus-halo')){
+      stage.style.borderRadius = '1.75rem';
+      stage.style.background = 'radial-gradient(circle at center, rgba(255,255,255,0.04), rgba(255,255,255,0.015) 48%, transparent 82%)';
+      stage.style.border = '1px solid rgba(255,255,255,0.06)';
+      stage.style.boxShadow = '0 22px 44px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.04)';
+
+      var halo = document.createElement('div');
+      halo.className = 'schema-focus-halo';
+      stage.appendChild(halo);
+
+      var ring = document.createElement('div');
+      ring.className = 'schema-orbit-ring';
+      stage.appendChild(ring);
+
+      var topBadge = document.createElement('div');
+      topBadge.className = 'schema-stage-badge top-left';
+      topBadge.innerHTML = '<strong>Figura-ancla</strong><br>Clarissa como centro refractado';
+      stage.appendChild(topBadge);
+
+      var bottomBadge = document.createElement('div');
+      bottomBadge.className = 'schema-stage-badge bottom-right';
+      bottomBadge.innerHTML = '<strong>Núcleo ausente</strong><br>la realidad nunca se cierra';
+      stage.appendChild(bottomBadge);
+    }
+
+    if(!container.querySelector('.schema-reading-card')){
+      var readingCard = document.createElement('div');
+      readingCard.className = 'schema-reading-card';
+      readingCard.innerHTML = `
+        <div class="schema-legend-grid">
+          <div class="schema-legend-item">
+            <div class="schema-legend-kicker"><span class="schema-legend-dot" style="background:#fbbf24"></span>conciencia ancla</div>
+            <p>La figura central necesita leerse primero: más claridad, más pausa visual y un contorno menos disputado.</p>
+          </div>
+          <div class="schema-legend-item">
+            <div class="schema-legend-kicker"><span class="schema-legend-dot" style="background:#c4b5fd"></span>ecos laterales</div>
+            <p>Las otras voces funcionan mejor como órbitas diferenciadas que como masas equivalentes compitiendo por el mismo peso.</p>
+          </div>
+          <div class="schema-legend-item">
+            <div class="schema-legend-kicker"><span class="schema-legend-dot" style="background:#60a5fa"></span>centro incompleto</div>
+            <p>El vacío intermedio debe sentirse deliberado: es la zona donde la realidad aparece como suma parcial de percepciones.</p>
+          </div>
+        </div>
+      `;
+      container.appendChild(readingCard);
+    }
+  }
+
+  function injectTiempoEnhancements(){
+    var factorHeading = findHeadingByText('h4', 'Los tres factores de Auerbach');
+    if(!factorHeading) return;
+    var factorCard = factorHeading.parentElement;
+    if(!factorCard || factorCard.parentElement == null) return;
+    if(factorCard.parentElement.querySelector('.schema-tiempo-card')) return;
+
+    var card = document.createElement('div');
+    card.className = 'schema-tiempo-card';
+    card.innerHTML = `
+      <div class="schema-tiempo-preview">
+        <img src="schema_2.png" alt="Esquema visual del tiempo y la digresión" />
+      </div>
+      <div class="schema-tiempo-copy">
+        <div class="schema-tiempo-ribbon">
+          <span class="schema-tiempo-chip"><span class="schema-legend-dot" style="background:#fbbf24"></span>tiempo externo</span>
+          <span class="schema-tiempo-chip"><span class="schema-legend-dot" style="background:#c4b5fd"></span>digresión interior</span>
+          <span class="schema-tiempo-chip"><span class="schema-legend-dot" style="background:#60a5fa"></span>quiebre del reloj</span>
+        </div>
+        <h4>Cómo leer este segundo esquema</h4>
+        <p>La cronología cotidiana debe sentirse como una estructura firme y casi mecánica, mientras que las digresiones se abren como cintas más libres, laterales y expansivas. Este bloque devuelve protagonismo al reloj y separa mejor la experiencia externa de la conciencia que se desborda.</p>
+      </div>
+    `;
+    factorCard.parentElement.insertBefore(card, factorCard);
+  }
+
+  function injectSchemaEnhancements(){
+    ensureSchemaEnhancementStyles();
+    injectClarissaEnhancements();
+    injectTiempoEnhancements();
+  }
+
+  window.addEventListener('hashchange', function(){
+    setTimeout(function(){
+      injectPuzzleImage();
+      injectSchemaEnhancements();
+      fixInlineStyles();
+    }, 120);
+  });
+
   // Initial runs
   setTimeout(function(){
     injectPuzzleImage();
+    injectSchemaEnhancements();
     fixInlineStyles();
   }, 500);
   // Re-check periodically for SPA navigation
   setInterval(function(){
     injectPuzzleImage();
+    injectSchemaEnhancements();
     if(document.documentElement.getAttribute('data-theme') === 'light') fixInlineStyles();
   }, 2000);
 })();
